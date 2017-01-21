@@ -70,9 +70,28 @@
 	border: #777777 1px solid;*/
     padding-top: 5px;
     padding-right: 9px;
-    padding-bottom: 10px;
+    padding-bottom: 4px;
     padding-left: 10px;
 	/*background-color: #BBBBBB;*/
+}
+
+.key_row
+{
+	/*margin-top: 5px;
+	border: #777777 1px solid;*/
+    padding-top: 2px;
+    padding-right: 9px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+	/*background-color: #BBBBBB;*/
+}
+
+.key_row p
+{
+	text-align: center;
+	font-size: 14px;
+	margin-top: 10px;
+	margin-bottom: 6px;
 }
 
 .statistics_row p
@@ -159,6 +178,18 @@ form
 .fixed_height_20
 {
 	height: 20px; 
+	overflow: hidden;
+}
+
+.fixed_height_24
+{
+	height: 24px; 
+	overflow: hidden;
+}
+
+.fixed_height_25
+{
+	height: 25px; 
 	overflow: hidden;
 }
 

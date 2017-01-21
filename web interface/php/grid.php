@@ -66,16 +66,18 @@ foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 
 /* SQL to return the status of all the hosts */
 $sql_select_query = 
-	"SELECT id, status
+	"SELECT id, status, cpu_usage
 	FROM hosts_status";
 
 foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 {
 	$id = $data_row[ 'id' ];
 	$status = $data_row[ 'status' ];
+	$cpu_usage = $data_row[ 'cpu_usage' ];
 	/* Store results in array for sorting later */
 	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'id' ] = $id;
 	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'status' ] = $status;
+	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'cpu_usage' ] = $cpu_usage;
 	
 	/* Increment the results counter */
 	$g_hosts_status_query_results_counter++;
@@ -155,6 +157,7 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 					{
 						$id = $g_hosts_status_query_results[ $k ][ 'id' ];
 						$status = $g_hosts_status_query_results[ $k ][ 'status' ];
+						$cpu_usage = $g_hosts_status_query_results[ $k ][ 'cpu_usage' ];
 						$display_text = $g_hosts_details_query_results[ $k ][ 'display_name' ];
 						switch ( $status )
 						{
@@ -165,7 +168,11 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 							}
 							case 1:
 							{
-								$colour = "#0088FF";
+								$blue_value = $cpu_usage * 2;
+								$green_value = 136;
+								$colour = "#00" . dechex ( $green_value ) . dechex ( $blue_value );
+								//$display_text = $blue_value;
+								//$colour = "#0088FF";
 								break;
 							}
 							case 2:
@@ -173,7 +180,7 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 							}
 							case 3:
 							{
-								$colour = "#FF5555";
+								$colour = "#DD5555";
 								break;
 							}
 							case 4:
@@ -192,7 +199,7 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 						}
 					}
 				}
-				echo ( "<td bgcolor=$colour class=\"fixed_height_26\">" );
+				echo ( "<td bgcolor=$colour class=\"fixed_height_25\">" );
 				echo ( "$display_text" );
 				echo ( "</td>" );
 			}
@@ -211,13 +218,13 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 					<div class=\"progress_bar_inner_columns\" style=\"background-color:white; width:$g_uninitialised_width%;\">
 						<p></p>
 					</div>
-					<div class=\"progress_bar_inner_columns\" style=\"background-color:#0088FF; width:$g_up_width%;\">
+					<div class=\"progress_bar_inner_columns\" style=\"background-color:#008800; width:$g_up_width%;\">
 						<p></p>
 					</div>
 					<div class=\"progress_bar_inner_columns\" style=\"background-color:#FFBF00; width:$g_just_lost_contact_width%;\">
 						<p></p>
 					</div>
-					<div class=\"progress_bar_inner_columns\" style=\"background-color:#FF5555; width:$g_not_responding_width%;\">
+					<div class=\"progress_bar_inner_columns\" style=\"background-color:#DD5555; width:$g_not_responding_width%;\">
 						<p></p>
 					</div>
 					<div class=\"progress_bar_inner_columns\" style=\"background-color:darkgrey; width:$g_stale_dns_width%;\">
@@ -229,6 +236,42 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 			<div class=\"col-sm-4\">
 				<div id=\"percentage\" style=\"background-color:$g_percentage_colour;\">
 					<p>$g_percentage_on%</p>
+				</div>
+			</div>
+		</div>
+	" );
+	
+	echo 
+	( "
+		<div class=\"row key_row\">
+			<div class=\"col-sm-2\">
+				<div>
+					<p>Key:</p>
+				</div>
+			</div>
+			<div class=\"col-sm-2\">
+				<div style=\"background-color:#008800;\">
+					<p>On</p>
+				</div>
+			</div>
+			<div class=\"col-sm-2\">
+				<div style=\"background-color:#0088C8;\">
+					<p>High load</p>
+				</div>
+			</div>
+			<div class=\"col-sm-2\">
+				<div style=\"background-color:#FFBF00;\">
+					<p>Just off</p>
+				</div>
+			</div>
+			<div class=\"col-sm-2\">
+				<div style=\"background-color:#DD5555;\">
+					<p>Not responding</p>
+				</div>
+			</div>
+			<div class=\"col-sm-2\">
+				<div style=\"background-color:darkgrey;\">
+					<p>Stale DNS</p>
 				</div>
 			</div>
 		</div>

@@ -65,7 +65,7 @@ function get_percentage_colour ( $percentage )
 	}
 	else
 	{
-		$colour = "#FF5555";
+		$colour = "#DD5555";
 	}
 	return $colour;
 }
