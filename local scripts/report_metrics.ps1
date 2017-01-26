@@ -41,16 +41,27 @@ function get-load {
 	$processor_usage = Get-Counter '\Processor(_Total)\% Processor Time' `
 		| Select-Object -ExpandProperty countersamples `
 		| Select-Object -Property cookedvalue
-
 	return $processor_usage.CookedValue
 	
 }
 
-function get-availablememory {
+function get-freememory {
 
-	$physical_memory = (systeminfo | Select-String 'Total Physical Memory:').ToString().Split(':')[1].Trim().Split(' ')[0]
-	$memory_usage = Get-Counter '\Memory\Available MBytes'
+	$memory_available = Get-Counter '\Memory\Available MBytes' `
+		| Select-Object -ExpandProperty countersamples `
+		| Select-Object -Property cookedvalue
+	return $memory_available.CookedValue
+	
+}
 
+function get-disktime {
+
+	$disk_time = Get-Counter '\PhysicalDisk(_Total)\% Disk Time' `
+		| Select-Object -ExpandProperty countersamples `
+		| Select-Object -Property cookedvalue
+	write-host $disk_time.CookedValue
+	return $disk_time.CookedValue
+	
 }
 
 $host_name =  $env:computername
@@ -60,17 +71,49 @@ $select_result = query-sql( $select_query )
 $id = $select_result.id
 write-host $id
 if ( -not [string]::IsNullOrEmpty( $id ) ) {
+
 	$load = 0
+	$memory_available = 0
+	$disk_time = 0
 	Try {
 		$load = get-load
 	}
 	Catch {
-		Write-Host "ERROR : Bad data"
+		Write-Host "ERROR : Bad CPU data"
+	}
+	Try {
+		$memory_available = get-freememory
+	}
+	Catch {
+		Write-Host "ERROR : Bad memory data"
+	}
+	Try {
+		$disk_time = get-disktime
+	}
+	Catch {
+		Write-Host "ERROR : Bad disk data"
 	}
 	if ( -not [string]::IsNullOrEmpty( $load ) ) {
 		$timestamp = get-date -f 'yyyy-MM-dd HH:mm:ss'
-		write-host "$host_name - $load - $timestamp"
+		write-host "Load: $host_name - $load - $timestamp"
 		$update_query = "UPDATE hosts_status SET cpu_usage=$load, cpu_timestamp=`'$timestamp`' WHERE id=$id"
 		query-sql( $update_query )
 	}
+	if ( -not [string]::IsNullOrEmpty( $memory_available ) ) {
+		$physical_memory = (systeminfo | Select-String 'Total Physical Memory:').ToString().Split(':')[1].Trim().Split(' ')[0]
+		$physical_memory = $physical_memory.replace(",","")
+		$free_percentage = ($memory_available*100/$physical_memory)
+		write-host "Memory: Physical - $physical_memory, Available - $memory_available, %Free - $free_percentage"
+		$timestamp = get-date -f 'yyyy-MM-dd HH:mm:ss'
+		write-host "Memory: $host_name - $free_percentage - $timestamp"
+		$update_query = "UPDATE hosts_status SET memory_usage=$free_percentage, memory_timestamp=`'$timestamp`' WHERE id=$id"
+		query-sql( $update_query )
+	}
+	if ( -not [string]::IsNullOrEmpty( $disk_time ) ) {
+		$timestamp = get-date -f 'yyyy-MM-dd HH:mm:ss'
+		write-host "Disk: $host_name - $disk_time - $timestamp"
+		$update_query = "UPDATE hosts_status SET disk_usage=$disk_time, disk_timestamp=`'$timestamp`' WHERE id=$id"
+		query-sql( $update_query )
+	}
+	
 }
