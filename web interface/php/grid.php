@@ -17,6 +17,12 @@ $g_hosts_status_query_results = array ( );
 $g_hosts_status_query_results_counter = 0;
 $g_percentage_on = 0;
 $g_percentage_colour = "#DDDDDD";
+$g_uninitialised_colour = "#FFFFFF";
+$g_stale_dns_colour = "#AAAAAA";
+$g_not_responding_colour = "#EE7070";
+$g_just_off_colour = "#FFBF00";
+$g_responding_colour = "#8CAA37";
+$g_high_load_colour = "#8CAAFF";
 $g_summary_results = NULL;
 $g_total_hosts = 0;
 $g_uninitialised_width = 0;
@@ -136,7 +142,7 @@ for ( $g_index = 0; $g_index < 6; $g_index++ )
 }
 
 $g_percentage_on = get_percentage_on ( $g_database_connection );
-$g_percentage_colour = get_percentage_colour ( $g_percentage_on );
+$g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_colour, $g_just_off_colour, $g_not_responding_colour );
 
 	echo ( 	"<div id=\"grid_row\" class=\"row\">
 			<div class=\"col-sm-12\">" );
@@ -163,15 +169,21 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 						{
 							case 0:
 							{
-								$colour = "white";
+								$colour = $g_uninitialised_colour;
 								break;
 							}
 							case 1:
 							{
-								$blue_value = $cpu_usage * 2;
-								$green_value = 136;
-								$colour = "#00" . dechex ( $green_value ) . dechex ( $blue_value );
-								//$display_text = $blue_value;
+								$green_value = 10;
+								//$blue_value = dechex ( $cpu_usage );
+								//$green_value = dechex ( $green_value );
+								//$display_text = $green_value;
+								//$blue_value = sprintf ( "%'.02X", dechex ( $cpu_usage ) );
+								$red_value = sprintf ( "%02X", 140 );
+								$green_value = sprintf ( "%02X", 170 );
+								$blue_value = sprintf ( "%02X", $cpu_usage * 2 + 55 );
+								$colour = "#". $red_value . $green_value . $blue_value;
+								//$display_text = $cpu_usage;
 								//$colour = "#0088FF";
 								break;
 							}
@@ -180,17 +192,17 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 							}
 							case 3:
 							{
-								$colour = "#DD5555";
+								$colour = $g_not_responding_colour;
 								break;
 							}
 							case 4:
 							{
-								$colour = "darkgrey";
+								$colour = $g_stale_dns_colour;
 								break;
 							}
 							case 5:
 							{
-								$colour = "#FFBF00";
+								$colour = $g_just_off_colour;
 								break;
 							}
 							default:
@@ -215,19 +227,19 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 		<div class=\"row statistics_row\">
 			<div class=\"col-sm-8\">
 				<div id=\"progress_bar\">
-					<div class=\"progress_bar_inner_columns\" style=\"background-color:white; width:$g_uninitialised_width%;\">
+					<div class=\"progress_bar_inner_columns\" style=\"background-color:$g_uninitialised_colour; width:$g_uninitialised_width%;\">
 						<p></p>
 					</div>
-					<div class=\"progress_bar_inner_columns\" style=\"background-color:#008800; width:$g_up_width%;\">
+					<div class=\"progress_bar_inner_columns\" style=\"background-color:$g_responding_colour; width:$g_up_width%;\">
 						<p></p>
 					</div>
-					<div class=\"progress_bar_inner_columns\" style=\"background-color:#FFBF00; width:$g_just_lost_contact_width%;\">
+					<div class=\"progress_bar_inner_columns\" style=\"background-color:$g_just_off_colour; width:$g_just_lost_contact_width%;\">
 						<p></p>
 					</div>
-					<div class=\"progress_bar_inner_columns\" style=\"background-color:#DD5555; width:$g_not_responding_width%;\">
+					<div class=\"progress_bar_inner_columns\" style=\"background-color:$g_not_responding_colour; width:$g_not_responding_width%;\">
 						<p></p>
 					</div>
-					<div class=\"progress_bar_inner_columns\" style=\"background-color:darkgrey; width:$g_stale_dns_width%;\">
+					<div class=\"progress_bar_inner_columns\" style=\"background-color:$g_stale_dns_colour; width:$g_stale_dns_width%;\">
 						<p></p>
 					</div>
 					<div class=\"clear\"></div>
@@ -250,27 +262,27 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on );
 				</div>
 			</div>
 			<div class=\"col-sm-2\">
-				<div style=\"background-color:#008800;\">
+				<div style=\"background-color:$g_responding_colour;\">
 					<p>On</p>
 				</div>
 			</div>
 			<div class=\"col-sm-2\">
-				<div style=\"background-color:#0088C8;\">
+				<div style=\"background-color:$g_high_load_colour;\">
 					<p>High load</p>
 				</div>
 			</div>
 			<div class=\"col-sm-2\">
-				<div style=\"background-color:#FFBF00;\">
+				<div style=\"background-color:$g_just_off_colour;\">
 					<p>Just off</p>
 				</div>
 			</div>
 			<div class=\"col-sm-2\">
-				<div style=\"background-color:#DD5555;\">
+				<div style=\"background-color:$g_not_responding_colour;\">
 					<p>Not responding</p>
 				</div>
 			</div>
 			<div class=\"col-sm-2\">
-				<div style=\"background-color:darkgrey;\">
+				<div style=\"background-color:$g_stale_dns_colour;\">
 					<p>Stale DNS</p>
 				</div>
 			</div>

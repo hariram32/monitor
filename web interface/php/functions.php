@@ -52,20 +52,20 @@ function get_percentage_on ( $db_connection )
 	return number_format ( (float) $result, 1, '.', '' );
 }
 
-function get_percentage_colour ( $percentage )
+function get_percentage_colour ( $percentage, $high_colour, $mid_colour, $low_colour )
 {
 	$colour = "#DDDDDDD";
 	if ( $percentage > 95 )
 	{
-		$colour = "#00FF00";
+		$colour = $high_colour;
 	}
 	else if ( $percentage > 85 )
 	{
-		$colour = "#FFBF00";
+		$colour = $mid_colour;
 	}
 	else
 	{
-		$colour = "#DD5555";
+		$colour = $low_colour;
 	}
 	return $colour;
 }
