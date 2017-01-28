@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 26, 2017 at 02:02 PM
+-- Generation Time: Jan 28, 2017 at 02:44 PM
 -- Server version: 5.5.52-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.20
 
@@ -19,6 +19,30 @@ SET time_zone = "+00:00";
 --
 -- Database: `monitor`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hosts_analysis`
+--
+
+CREATE TABLE IF NOT EXISTS `hosts_analysis` (
+  `host_name` varchar(40) NOT NULL,
+  `cpu_max` int(11) NOT NULL,
+  `cpu_max_timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `cpu_min` int(11) NOT NULL,
+  `cpu_min_timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `memory_max` int(11) NOT NULL,
+  `memory_max_timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `memory_min` int(11) NOT NULL,
+  `memory_min_timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `disk_max` int(11) NOT NULL,
+  `disk_max_timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `disk_min` int(11) NOT NULL,
+  `disk_min_timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  UNIQUE KEY `host_name_2` (`host_name`),
+  KEY `host_name` (`host_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -53,6 +77,20 @@ CREATE TABLE IF NOT EXISTS `hosts_status` (
   `disk_usage` int(11) NOT NULL,
   `disk_timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Triggers `hosts_status`
+--
+DROP TRIGGER IF EXISTS `update_analysis`;
+DELIMITER //
+CREATE TRIGGER `update_analysis` AFTER UPDATE ON `hosts_status`
+ FOR EACH ROW BEGIN
+IF NEW.cpu_usage > hosts_analysis.cpu_max THEN
+UPDATE hosts_analysis SET cpu_max = NEW.cpu_usage;
+END IF;
+END
+//
+DELIMITER ;
 
 -- --------------------------------------------------------
 
