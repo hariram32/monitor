@@ -34,40 +34,40 @@ INSERT INTO hosts_analysis
    WHERE NEW.id = hosts_details.id
  ON DUPLICATE KEY
   UPDATE
-   cpu_max=
-   CASE WHEN NEW.cpu_usage > cpu_max THEN NEW.cpu_usage ELSE cpu_max
-   END,
    cpu_max_timestamp=
    CASE WHEN NEW.cpu_usage > cpu_max THEN NEW.cpu_timestamp ELSE cpu_max_timestamp
    END,
-   cpu_min=
-   CASE WHEN NEW.cpu_usage < cpu_min THEN NEW.cpu_usage ELSE cpu_min
+   cpu_max=
+   CASE WHEN NEW.cpu_usage > cpu_max THEN NEW.cpu_usage ELSE cpu_max
    END,
    cpu_min_timestamp=
    CASE WHEN NEW.cpu_usage < cpu_min THEN NEW.cpu_timestamp ELSE cpu_min_timestamp
    END,
-   memory_max=
-   CASE WHEN NEW.memory_usage > memory_max THEN NEW.memory_usage ELSE memory_max
+   cpu_min=
+   CASE WHEN NEW.cpu_usage < cpu_min THEN NEW.cpu_usage ELSE cpu_min
    END,
    memory_max_timestamp=
    CASE WHEN NEW.memory_usage > memory_max THEN NEW.memory_timestamp ELSE memory_max_timestamp
    END,
-   memory_min=
-   CASE WHEN NEW.memory_usage < memory_min THEN NEW.memory_usage ELSE memory_min
+   memory_max=
+   CASE WHEN NEW.memory_usage > memory_max THEN NEW.memory_usage ELSE memory_max
    END,
    memory_min_timestamp=
    CASE WHEN NEW.memory_usage < memory_min THEN NEW.memory_timestamp ELSE memory_min_timestamp
    END,
-   disk_max=
-   CASE WHEN NEW.disk_usage > disk_max THEN NEW.disk_usage ELSE disk_max
+   memory_min=
+   CASE WHEN NEW.memory_usage < memory_min THEN NEW.memory_usage ELSE memory_min
    END,
    disk_max_timestamp=
    CASE WHEN NEW.disk_usage > disk_max THEN NEW.disk_timestamp ELSE disk_max_timestamp
    END,
-   disk_min=
-   CASE WHEN NEW.disk_usage < disk_min THEN NEW.disk_usage ELSE disk_min
+   disk_max=
+   CASE WHEN NEW.disk_usage > disk_max THEN NEW.disk_usage ELSE disk_max
    END,
    disk_min_timestamp=
    CASE WHEN NEW.disk_usage < disk_min THEN NEW.disk_timestamp ELSE disk_min_timestamp
+   END,
+   disk_min=
+   CASE WHEN NEW.disk_usage < disk_min THEN NEW.disk_usage ELSE disk_min
    END;
 END
