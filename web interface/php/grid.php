@@ -147,7 +147,7 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 	echo ( 	"<div id=\"grid_row\" class=\"row\">
 			<div class=\"col-sm-12\">" );
 	
-		echo ( "<table border=\"1\" class=\"fixed centred\">" );
+		echo ( "<table id=\"grid_table\" border=\"1\" class=\"fixed centred\">" );
 		//echo ( "<table class=\"fixed centred\">" );
 		
 		for ( $i = 0; $i < 30; $i++ )

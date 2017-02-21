@@ -8,6 +8,17 @@ function refresh_grid( )
 		{
 			//window.alert("Ready state: " + xhttp.readyState);
 			document.getElementById( "grid" ).innerHTML = xhttp.responseText;
+			$("#grid_table").on("mouseenter", "td",
+			function() {
+			  $(this).css('background-color', '#ff0000');
+			  $(this).css('color', '#000000');
+			  console.log("MOUSEENTER");
+			}).on("mouseleave", "td",
+			function() {
+			  $(this).css('background-color', 'none');
+			  $(this).css('color', 'black'); // or whatever your original color was
+			  console.log("MOUSELEAVE");
+			});
 		}
 		else
 		{

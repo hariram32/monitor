@@ -17,9 +17,9 @@ echo
 		<link rel=\"stylesheet\" type=\"text/css\" href=\"{$path_to_root}css/monitor.css\">
 		<link rel=\"icon\" type=\"image/png\" href=\"{$path_to_root}images/favicon.png\" sizes=\"16x16\">
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-		<script type=\"text/javascript\" src=\"{$path_to_root}modules/jquery/jquery-min.js\" defer></script>
+		<script type=\"text/javascript\" src=\"{$path_to_root}modules/jquery/jquery-min.js\"></script>
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
-		<script type=\"text/javascript\" src=\"{$path_to_root}modules/bootstrap/js/bootstrap.min.js\" defer></script>
+		<script type=\"text/javascript\" src=\"{$path_to_root}modules/bootstrap/js/bootstrap.min.js\"></script>
 		<script type=\"text/javascript\" src=\"{$path_to_root}javascript/monitor.js\"></script>
 " );
 ?>
