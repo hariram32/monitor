@@ -8,17 +8,18 @@ function refresh_grid( )
 		{
 			//window.alert("Ready state: " + xhttp.readyState);
 			document.getElementById( "grid" ).innerHTML = xhttp.responseText;
-			$( document ).ready(function() {
+			$(function () { $("[data-toggle='popover']").popover(); });
+			/*$( document ).ready(function() {
 				$("#grid_table").on("mouseenter", "td",
 				function() {
-				  $("[rel='tooltip']").tooltip();
+				  $("[rel='popover']").popover();
 				  console.log("MOUSEENTER");
 				}).on("mouseleave", "td",
 				function() {
 				  //$("[rel='tooltip']").tooltip();
 				  console.log("MOUSELEAVE");
 				});	
-			} );				
+			} );*/				
 			/*$("#grid_table").on("mouseenter", "td",
 			function() {
 			  $(this).children("div").css('display', 'block');

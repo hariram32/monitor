@@ -223,7 +223,10 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 					}
 				}
 				echo ( "<td bgcolor=$colour class=\"fixed_height_25\">" );
-				echo ( "<div data-toggle=\"tooltip\" data-html=\"true\" title=\" <p> CPU Usage: $cpu_usage </p> <p> Memory Usage: $memory_usage </p> <p> Disk Usage: $disk_usage </p> \">$display_text</div>" );
+				//echo ( "<div data-toggle=\"tooltip\" data-html=\"true\"	title=\" <p> CPU Usage: $cpu_usage </p> <p> Memory Usage: $memory_usage </p> <p> Disk Usage: $disk_usage </p> \">" );
+				echo ( "<div data-toggle=\"popover\" data-placement=\"top\" data-trigger=\"hover\" data-html=\"true\" title=\"$display_text\" data-content=\"<p>CPU Usage: $cpu_usage%</p><p>Free Memory: $memory_usage%</p><p>Disk Usage: $disk_usage</p>\">" );
+				echo ( $display_text );
+				echo ( "</div>" );
 				echo ( "</td>" );
 				//echo ( "<td bgcolor=$colour class=\"fixed_height_25\" class=\"popup\">" );
 				//echo ( "<span id=\"grid_popup_$index\" class=\"popuptext\">CPU Usage: $cpu_usage</span>" );
