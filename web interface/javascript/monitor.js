@@ -8,17 +8,26 @@ function refresh_grid( )
 		{
 			//window.alert("Ready state: " + xhttp.readyState);
 			document.getElementById( "grid" ).innerHTML = xhttp.responseText;
-			$("#grid_table").on("mouseenter", "td",
+			$( document ).ready(function() {
+				$("#grid_table").on("mouseenter", "td",
+				function() {
+				  $("[rel='tooltip']").tooltip();
+				  console.log("MOUSEENTER");
+				}).on("mouseleave", "td",
+				function() {
+				  //$("[rel='tooltip']").tooltip();
+				  console.log("MOUSELEAVE");
+				});	
+			} );				
+			/*$("#grid_table").on("mouseenter", "td",
 			function() {
-			  $(this).css('background-color', '#ff0000');
-			  $(this).css('color', '#000000');
+			  $(this).children("div").css('display', 'block');
 			  console.log("MOUSEENTER");
 			}).on("mouseleave", "td",
 			function() {
-			  $(this).css('background-color', 'none');
-			  $(this).css('color', 'black'); // or whatever your original color was
+			  $(this).children("div").css('display', 'none');
 			  console.log("MOUSELEAVE");
-			});
+			});*/
 		}
 		else
 		{

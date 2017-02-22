@@ -16,6 +16,7 @@ $path_to_root = './';
 		<script>
 			refresh_grid( );
 			setInterval( refresh_grid, 10000 );
+			<!--setInterval( refresh_grid, 10000 );-->
 		</script>
 	</head>
 	<body>
