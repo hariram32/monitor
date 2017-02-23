@@ -59,13 +59,15 @@ function get-disktime {
 	$disk_time = Get-Counter '\PhysicalDisk(_Total)\% Disk Time' `
 		| Select-Object -ExpandProperty countersamples `
 		| Select-Object -Property cookedvalue
-	write-host $disk_time.CookedValue
 	return $disk_time.CookedValue
 	
 }
 
 $host_name =  $env:computername
 write-host $host_name
+$CS = Gwmi Win32_ComputerSystem
+write-host $CS.UserName
+$logged_on_user = [regex]::escape( $CS.UserName )
 $select_query = "SELECT id, canonical_name FROM hosts_details WHERE canonical_name=`'$host_name`'"
 $select_result = query-sql( $select_query )
 $id = $select_result.id
@@ -115,5 +117,10 @@ if ( -not [string]::IsNullOrEmpty( $id ) ) {
 		$update_query = "UPDATE hosts_status SET disk_usage=$disk_time, disk_timestamp=`'$timestamp`' WHERE id=$id"
 		query-sql( $update_query )
 	}
-	
+	if ( [string]::IsNullOrEmpty( $logged_on_user ) ) {
+		$logged_on_user = "none"
+	}
+	$update_query = "UPDATE hosts_status SET logged_on_user=`'$logged_on_user`' WHERE id=$id"
+	query-sql( $update_query )
+
 }

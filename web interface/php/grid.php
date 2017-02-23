@@ -72,37 +72,45 @@ foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 
 /* SQL to return the status of all the hosts */
 $sql_select_query = 
-	"SELECT id, status, cpu_usage, memory_usage, disk_usage
+	"SELECT id, status, cpu_usage, memory_usage, disk_usage, cpu_timestamp, logged_on_user
 	FROM hosts_status";
 
 foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 {
 	$id = $data_row[ 'id' ];
 	$status = $data_row[ 'status' ];
-	$cpu_usage = $data_row[ 'cpu_usage' ];
-	$memory_usage = $data_row[ 'memory_usage' ];
+	$cpu_usage = $data_row[ 'cpu_usage' ] . '%';
+	$memory_usage = $data_row[ 'memory_usage' ] . '%';
 	$disk_usage = $data_row[ 'disk_usage' ];
+	$cpu_timestamp = $data_row[ 'cpu_timestamp' ];
+	$logged_on_user = $data_row[ 'logged_on_user' ];
+	if ( $cpu_timestamp == 0 )
+	{
+		$cpu_usage = "unknown";
+		$memory_usage = "unknown";
+		$disk_usage = "unknown";
+		$cpu_timestamp = "never";
+		$logged_on_user = "unknown";
+	}
+
 	/* Store results in array for sorting later */
 	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'id' ] = $id;
 	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'status' ] = $status;
 	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'cpu_usage' ] = $cpu_usage;
 	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'memory_usage' ] = $memory_usage;
 	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'disk_usage' ] = $disk_usage;
+	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'cpu_timestamp' ] = $cpu_timestamp;
+	$g_hosts_status_query_results[ $g_hosts_status_query_results_counter ][ 'logged_on_user' ] = $logged_on_user;
 
 	/* Increment the results counter */
 	$g_hosts_status_query_results_counter++;
 }
-
-/* Populate javascript array for tooltips */
-//echo ( '<script>var host_status_details = ' . json_encode( $g_hosts_status_query_results ) . ';</script>' );	
-
 
 $g_summary_results = get_status_count ( $g_database_connection );
 foreach ( $g_summary_results as $count )
 {
 	$g_total_hosts += $count;
 }
-//echo ( "Total hosts: $g_total_hosts" );
 
 for ( $g_index = 0; $g_index < 6; $g_index++ )
 {
@@ -155,7 +163,6 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 			<div class=\"col-sm-12\">" );
 	
 		echo ( "<table id=\"grid_table\" border=\"1\" class=\"fixed centred\">" );
-		//echo ( "<table class=\"fixed centred\">" );
 		
 		for ( $i = 0; $i < 30; $i++ )
 		{
@@ -175,6 +182,8 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 						$cpu_usage = $g_hosts_status_query_results[ $k ][ 'cpu_usage' ];
 						$memory_usage = $g_hosts_status_query_results[ $k ][ 'memory_usage' ];
 						$disk_usage = $g_hosts_status_query_results[ $k ][ 'disk_usage' ];
+						$cpu_timestamp = $g_hosts_status_query_results[ $k ][ 'cpu_timestamp' ];
+						$logged_on_user = $g_hosts_status_query_results[ $k ][ 'logged_on_user' ];
 						$display_text = $g_hosts_details_query_results[ $k ][ 'display_name' ];
 						switch ( $status )
 						{
@@ -185,17 +194,10 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 							}
 							case 1:
 							{
-								$green_value = 10;
-								//$blue_value = dechex ( $cpu_usage );
-								//$green_value = dechex ( $green_value );
-								//$display_text = $green_value;
-								//$blue_value = sprintf ( "%'.02X", dechex ( $cpu_usage ) );
 								$red_value = sprintf ( "%02X", 140 );
 								$green_value = sprintf ( "%02X", 170 );
 								$blue_value = sprintf ( "%02X", $cpu_usage * 2 + 55 );
 								$colour = "#". $red_value . $green_value . $blue_value;
-								//$display_text = $cpu_usage;
-								//$colour = "#0088FF";
 								break;
 							}
 							case 2:
@@ -223,15 +225,20 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 					}
 				}
 				echo ( "<td bgcolor=$colour class=\"fixed_height_25\">" );
-				//echo ( "<div data-toggle=\"tooltip\" data-html=\"true\"	title=\" <p> CPU Usage: $cpu_usage </p> <p> Memory Usage: $memory_usage </p> <p> Disk Usage: $disk_usage </p> \">" );
-				echo ( "<div data-toggle=\"popover\" data-placement=\"top\" data-trigger=\"hover\" data-html=\"true\" title=\"$display_text\" data-content=\"<p>CPU Usage: $cpu_usage%</p><p>Free Memory: $memory_usage%</p><p>Disk Usage: $disk_usage</p>\">" );
+				echo 
+				( "
+					<div 
+						data-toggle=\"popover\"
+						data-placement=\"auto\" 
+						data-trigger=\"hover\" 
+						data-html=\"true\" 
+						title=\"$display_text\" 
+						data-content=\"<p>Logged On: $logged_on_user</p><p>CPU Usage: $cpu_usage</p><p>Free Memory: $memory_usage</p><p>Disk Usage: $disk_usage</p><p><small>Last Reported: $cpu_timestamp</small></p>\"
+					>
+				" );
 				echo ( $display_text );
 				echo ( "</div>" );
 				echo ( "</td>" );
-				//echo ( "<td bgcolor=$colour class=\"fixed_height_25\" class=\"popup\">" );
-				//echo ( "<span id=\"grid_popup_$index\" class=\"popuptext\">CPU Usage: $cpu_usage</span>" );
-				//echo ( "$display_text" );
-				//echo ( "</td>" );
 			}
 			echo ( "</tr>" );
 		}
