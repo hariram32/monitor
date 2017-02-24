@@ -16,15 +16,18 @@
 #define COUNT_HALT2  6
 #define NUM_THREADS	8
 #define PACKETSIZE	64
-#define MAX_HOSTS 1000
+#define MAX_HOSTS 4000
 #define MAX_CSV_COLUMNS 10
 #define MAX_CSV_LINE_LENGTH 400
 #define MAX_CSV_ENTRY_LENGTH 40
 #define SOCK_PATH "/dev/socket/echo_socket"
 #define PING_TIMEOUT 40000
 #define MAX_SQL_QUERY_LENGTH 1000
+#define MAX_LONG_SQL_QUERY_LENGTH 100000
+#define MAX_MULTI_STATEMENT_SQL_QUERY_LENGTH 100000
+#define MAX_SQL_VALUES_LENGTH 50000
 #define HOSTS_DATA_PATH "/usr/bin/monitor/hosts.csv"
-#define REINITIALISE_TIMEOUT 7200000
+#define REINITIALISE_TIMEOUT 20000000
 
 #include <initialise.h>
 #include <process.h>

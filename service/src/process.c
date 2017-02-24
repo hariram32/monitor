@@ -43,7 +43,10 @@ int process_timers ( )
 				g_hosts [ i ] . ping_status = sending;
 				g_hosts [ i ] . clock_at_send = current_clock;
 			}
-			printf ( "Clock difference for host %d is %d\n", i, clock_difference );
+			/*if ( i == 1 || i == 649 )
+			{
+				printf ( "Clock difference for host %d is %d\n", i, clock_difference );
+			}*/
 		}
 	}	
 }
@@ -75,6 +78,13 @@ int process_receive ( void *buf, int bytes )
 			stored_ip_address = g_hosts [ id ] . ip;
 			if ( !strcmp ( stored_ip_address, src_addr ) )
 			{
+				if ( id == 1 || id == 619 )
+				{
+					unsigned long long current_clock = clock ( );
+					clock_t host_clock = g_hosts [ id ] . clock_at_send;
+					int clock_difference = current_clock - host_clock;
+					printf ( "Received ping for host %d at clock %d, clock difference %d\n", id, current_clock, clock_difference );
+				}
 				g_hosts [ id ] . status = up;
 				g_hosts [ id ] . ping_status = sending;
 				g_hosts [ id ] . reply_count++;
@@ -96,8 +106,8 @@ int process_receive ( void *buf, int bytes )
 			char original_dst_addr [ 16 ];
 			inet_ntop ( AF_INET, ( void * )&( ip_original -> saddr ), original_src_addr, 16 );
 			inet_ntop ( AF_INET, ( void * )&( ip_original -> daddr ), original_dst_addr, 16 );
-			printf ( "Host %d unreachable ( original src: %s, original dst: %s, ip: %s )\n",
-				original_id, original_src_addr, original_dst_addr, stored_ip_address );
+			/*printf ( "Host %d unreachable ( original src: %s, original dst: %s, ip: %s )\n",
+				original_id, original_src_addr, original_dst_addr, stored_ip_address );*/
 			if ( !strcmp ( stored_ip_address, original_dst_addr ) )
 			{
 				if ( g_hosts [ original_id ] . status == up || g_hosts [ original_id ] . status == uninitialised )
@@ -107,7 +117,7 @@ int process_receive ( void *buf, int bytes )
 				else
 				{
 					g_hosts [ original_id ] . status = unreachable;
-					printf ( "Status for host %d changed to unreachable\n", original_id );
+					//printf ( "Status for host %d unreachable\n", original_id );
 				}
 				g_hosts [ original_id ] . ping_status = sending;
 			}			
@@ -126,6 +136,7 @@ int process_hosts ( )
 	{
 		if ( i % 100 == 0 )
 		{
+			process_timers ( );
 			sleep ( 1 );
 		}
 		if ( g_hosts [ i ] . status != not_found )
@@ -138,10 +149,14 @@ int process_hosts ( )
 					g_hosts [ i ] . clock_at_send = current_clock;
 					g_hosts [ i ] . send_count++;
 					g_hosts [ i ] . ping_status = sent;
+					if ( i == 1 || i == 619 )
+					{
+						printf ( "Sending ping for host %d at clock %d \n", i, current_clock );
+					}
 				}
 			}
 		}
-		for ( j = 0; j < 4; j++ )
+		for ( j = 0; j < 2; j++ )
 		{		
 			receive ( );
 		}

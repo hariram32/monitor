@@ -185,6 +185,7 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 						$cpu_timestamp = $g_hosts_status_query_results[ $k ][ 'cpu_timestamp' ];
 						$logged_on_user = $g_hosts_status_query_results[ $k ][ 'logged_on_user' ];
 						$display_text = $g_hosts_details_query_results[ $k ][ 'display_name' ];
+						$canonical_name = $g_hosts_details_query_results[ $k ][ 'canonical_name' ];
 						switch ( $status )
 						{
 							case 0:
@@ -232,8 +233,8 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 						data-placement=\"auto\" 
 						data-trigger=\"hover\" 
 						data-html=\"true\" 
-						title=\"$display_text\" 
-						data-content=\"<p>Logged On: $logged_on_user</p><p>CPU Usage: $cpu_usage</p><p>Free Memory: $memory_usage</p><p>Disk Usage: $disk_usage</p><p><small>Last Reported: $cpu_timestamp</small></p>\"
+						title=\"$canonical_name\" 
+						data-content=\"<p>User: $logged_on_user</p><p>CPU Usage: $cpu_usage</p><p>Free Memory: $memory_usage</p><p>Disk Usage: $disk_usage</p><p><small>Last Reported: $cpu_timestamp</small></p>\"
 					>
 				" );
 				echo ( $display_text );

@@ -24,10 +24,19 @@ main ( )
 		// Main loop
 		while ( !process_reinitialise_timer ( ) )
 		{	
+			unsigned long long current_clock = 0;
+			current_clock = clock ( );
+			printf ( "Main loop started at clock %d\n", current_clock );
 			process_timers ( );
+			current_clock = clock ( );
+			printf ( "Hosts processing started at clock %d\n", current_clock );
 			process_hosts ( );
+			current_clock = clock ( );
+			printf ( "Database processing started at clock %d\n", current_clock );
 			process_database ( );
-			sleep ( 10 );
+			sleep ( 1 );
+			current_clock = clock ( );
+			printf ( "Main loop finished at clock %d\n", current_clock );
 		}
 		
 		/* Close database connection */
