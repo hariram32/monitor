@@ -26,17 +26,17 @@ main ( )
 		{	
 			unsigned long long current_clock = 0;
 			current_clock = clock ( );
-			printf ( "Main loop started at clock %d\n", current_clock );
+			printf ( "Main loop started at clock %lld\n", current_clock );
 			process_timers ( );
 			current_clock = clock ( );
-			printf ( "Hosts processing started at clock %d\n", current_clock );
+			printf ( "Hosts processing started at clock %lld\n", current_clock );
 			process_hosts ( );
 			current_clock = clock ( );
-			printf ( "Database processing started at clock %d\n", current_clock );
+			printf ( "Database processing started at clock %lld\n", current_clock );
 			process_database ( );
 			sleep ( 1 );
 			current_clock = clock ( );
-			printf ( "Main loop finished at clock %d\n", current_clock );
+			printf ( "Main loop finished at clock %lld\n", current_clock );
 		}
 		
 		/* Close database connection */

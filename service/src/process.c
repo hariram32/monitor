@@ -16,12 +16,13 @@ int process_reinitialise_timer ( )
 
 int process_timers ( )
 {
+	printf ( "Processing timers\n" );
 	int i;
 	//unsigned long long current_clock = clock ( );
 	clock_t current_clock = clock ( );
 	for ( i = 0; i < g_host_count; i++ )
 	{
-		if ( g_hosts [ i ] . status != not_found )
+		if ( g_hosts [ i ] . status != not_found && g_hosts [ i ] . ping_status == sent )
 		{
 			//unsigned long long clock_difference = 0, host_clock = g_hosts [ i ] . clock_at_send;
 			clock_t host_clock = g_hosts [ i ] . clock_at_send;
@@ -31,13 +32,18 @@ int process_timers ( )
 				i, millisecond_time_difference, current_clock, host_clock );*/
 			if ( clock_difference > PING_TIMEOUT )
 			{
-				printf ( "Host %d timed out\n", i );
+				if ( i == 1 || i == 619 )
+				{
+					printf ( "Host %d timed out, clock difference: %d\n", i, clock_difference );
+				}
 				if ( g_hosts [ i ] . status == up || g_hosts [ i ] . status == uninitialised )
 				{
+					g_hosts [ i ] . previous_status = g_hosts [ i ] . status;
 					g_hosts [ i ] . status = just_lost_contact;
 				}
 				else
 				{
+					g_hosts [ i ] . previous_status = g_hosts [ i ] . status;
 					g_hosts [ i ] . status = timed_out;
 				}
 				g_hosts [ i ] . ping_status = sending;
@@ -83,8 +89,9 @@ int process_receive ( void *buf, int bytes )
 					unsigned long long current_clock = clock ( );
 					clock_t host_clock = g_hosts [ id ] . clock_at_send;
 					int clock_difference = current_clock - host_clock;
-					printf ( "Received ping for host %d at clock %d, clock difference %d\n", id, current_clock, clock_difference );
+					printf ( "Received ping for host %d at clock %lld, clock difference %d\n", id, current_clock, clock_difference );
 				}
+				g_hosts [ id ] . previous_status = g_hosts [ id ] . status;
 				g_hosts [ id ] . status = up;
 				g_hosts [ id ] . ping_status = sending;
 				g_hosts [ id ] . reply_count++;
@@ -112,10 +119,12 @@ int process_receive ( void *buf, int bytes )
 			{
 				if ( g_hosts [ original_id ] . status == up || g_hosts [ original_id ] . status == uninitialised )
 				{
+					g_hosts [ original_id ] . previous_status = g_hosts [ original_id ] . status;
 					g_hosts [ original_id ] . status = just_lost_contact;
 				}
 				else
 				{
+					g_hosts [ original_id ] . previous_status = g_hosts [ original_id ] . status;
 					g_hosts [ original_id ] . status = unreachable;
 					//printf ( "Status for host %d unreachable\n", original_id );
 				}
@@ -151,7 +160,7 @@ int process_hosts ( )
 					g_hosts [ i ] . ping_status = sent;
 					if ( i == 1 || i == 619 )
 					{
-						printf ( "Sending ping for host %d at clock %d \n", i, current_clock );
+						printf ( "Sending ping for host %d at clock %lld \n", i, current_clock );
 					}
 				}
 			}

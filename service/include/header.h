@@ -21,7 +21,7 @@
 #define MAX_CSV_LINE_LENGTH 400
 #define MAX_CSV_ENTRY_LENGTH 40
 #define SOCK_PATH "/dev/socket/echo_socket"
-#define PING_TIMEOUT 40000
+#define PING_TIMEOUT 10000
 #define MAX_SQL_QUERY_LENGTH 1000
 #define MAX_LONG_SQL_QUERY_LENGTH 100000
 #define MAX_MULTI_STATEMENT_SQL_QUERY_LENGTH 100000
@@ -64,6 +64,7 @@ struct host_info
 	char ip [ 16 ];
 	unsigned short send_count;
 	unsigned short reply_count;
+	host_status previous_status;
 	host_status status;
 	ping_status ping_status;
 	struct addrinfo *address_info;

@@ -50,6 +50,7 @@ int initialise_hosts ( )
 	/* Initialise host variables for all monitored hosts */
 	for ( i = 0; i < g_host_count; i++ )
 	{
+		g_hosts [ i ] . previous_status = uninitialised;
 		g_hosts [ i ] . status = uninitialised;
 		g_hosts [ i ] . ping_status = sending;
 		int s = 0;

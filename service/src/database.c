@@ -131,6 +131,7 @@ int initialise_database ( )
 
 int process_database ( )
 {
+	/*
 	int i;
 	char query_values [ MAX_SQL_VALUES_LENGTH ];
 	for ( i = 0; i < g_host_count; i++ )
@@ -180,23 +181,44 @@ int process_database ( )
 	{
 		printf ( "%s\n", mysql_error ( g_conn ) );
 		exit ( 1 );
-	}
-	/*for ( i = 0; i < g_host_count; i++ )
+	}*/
+	int i = 0, consecutive_updates = 0;
+	for ( i = 0; i < g_host_count; i++ )
 	{
+		host_status previous_status = g_hosts [ i ] . previous_status;
 		host_status status = g_hosts [ i ] . status;
-		char update_query [ MAX_SQL_QUERY_LENGTH ];
-		sprintf
-		(
-			update_query,
-			"UPDATE hosts_status SET status='%d' WHERE id=%d"
-			, status, i
-		);
-		if ( mysql_query ( g_conn, update_query ) ) 
+		if ( status != previous_status )
 		{
-			printf ( "%s\n", mysql_error ( g_conn ) );
-			exit ( 1 );
+			consecutive_updates++;
+			if ( consecutive_updates % 100 == 0 )
+			{
+				int j = 0;
+				for ( j = 0; j < 10; j++ )
+				{		
+					receive ( );
+				}
+				process_timers ( );
+			}
+			printf( "Updating database status for host %d, previous status: %d, current status: %d\n", i, previous_status, status );
+			char update_query [ MAX_SQL_QUERY_LENGTH ];
+			sprintf
+			(
+				update_query,
+				"UPDATE hosts_status SET status='%d' WHERE id=%d"
+				, status, i
+			);
+			if ( mysql_query ( g_conn, update_query ) ) 
+			{
+				printf ( "%s\n", mysql_error ( g_conn ) );
+				exit ( 1 );
+			}
+		}
+		else
+		{
+			consecutive_updates = 0;
 		}
 	}
+	/*
 	char final_update_query [ MAX_MULTI_STATEMENT_SQL_QUERY_LENGTH ];
 	for ( i = 0; i < g_host_count; i++ )
 	{
