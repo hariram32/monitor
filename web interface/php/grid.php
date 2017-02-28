@@ -32,6 +32,9 @@ $g_stale_dns_width = 0;
 $g_just_lost_contact_width = 0;
 $g_index = 0;
 
+$g_site = 2;
+$test_host = 0;
+
 /* Grab configuration data from ini files */
 $g_database_connection_data = parse_ini_file ( "{$db_config_location}", true );
 
@@ -48,7 +51,8 @@ $g_database_connection = open_database_connection ( $db_server, $db_database, $d
 /* SQL to return all the hosts in the database */
 $sql_select_query = 
 	"SELECT id, canonical_name, ip, display_name, grid_y, grid_x
-	FROM hosts_details";
+	FROM hosts_details
+	WHERE site = $g_site";
 
 foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 {
@@ -66,6 +70,11 @@ foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'grid_y' ] = $grid_y;
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'grid_x' ] = $grid_x;
 	
+	if ( $id == 1364 )
+	{
+		$test_host = $canonical_name;
+	}
+	
 	/* Increment the results counter */
 	$g_hosts_details_query_results_counter++;
 }
@@ -73,8 +82,13 @@ foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 /* SQL to return the status of all the hosts */
 $sql_select_query = 
 	"SELECT id, status, cpu_usage, memory_usage, disk_usage, cpu_timestamp, logged_on_user
-	FROM hosts_status";
-
+	FROM hosts_status
+	WHERE id IN
+			(SELECT id
+				FROM hosts_details
+				WHERE site = $g_site
+				)";
+	
 foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 {
 	$id = $data_row[ 'id' ];
@@ -244,6 +258,7 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 						data-content=\"<p>User: $logged_on_user</p><p>CPU Usage: $cpu_usage</p><p>Free Memory: $memory_usage</p><p>Disk Usage: $disk_usage</p><p><small>Last Reported: $cpu_timestamp</small></p>\"
 					>
 				" );
+				//$display_text = $test_host;
 				echo ( $display_text );
 				echo ( "</div>" );
 				echo ( "</td>" );
