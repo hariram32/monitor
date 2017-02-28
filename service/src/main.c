@@ -7,6 +7,7 @@ int g_host_count = 0;
 char g_host_data [ MAX_HOSTS ][ MAX_CSV_COLUMNS ][ MAX_CSV_ENTRY_LENGTH ];
 MYSQL *g_conn;
 clock_t g_reinitialise_timer = 0;
+int g_consecutive_database_updates = 0;
 
 main ( )
 {

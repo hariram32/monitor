@@ -28,6 +28,7 @@
 #define MAX_SQL_VALUES_LENGTH 50000
 #define HOSTS_DATA_PATH "/usr/bin/monitor/hosts.csv"
 #define REINITIALISE_TIMEOUT 20000000
+#define MAX_CONSECUTIVE_DIFFERENTIAL_DATABASE_UPDATES 50
 
 #include <initialise.h>
 #include <process.h>
@@ -79,3 +80,4 @@ extern struct host_info g_hosts [ MAX_HOSTS ];
 extern int g_host_count;
 extern MYSQL *g_conn;
 extern clock_t g_reinitialise_timer;
+extern int g_consecutive_database_updates;

@@ -187,7 +187,7 @@ int process_database ( )
 	{
 		host_status previous_status = g_hosts [ i ] . previous_status;
 		host_status status = g_hosts [ i ] . status;
-		if ( status != previous_status )
+		if ( status != previous_status || g_consecutive_database_updates == MAX_CONSECUTIVE_DIFFERENTIAL_DATABASE_UPDATES )
 		{
 			consecutive_updates++;
 			if ( consecutive_updates % 100 == 0 )
@@ -217,6 +217,10 @@ int process_database ( )
 		{
 			consecutive_updates = 0;
 		}
+	}
+	if ( ++g_consecutive_database_updates > MAX_CONSECUTIVE_DIFFERENTIAL_DATABASE_UPDATES )
+	{
+			g_consecutive_database_updates = 0;
 	}
 	/*
 	char final_update_query [ MAX_MULTI_STATEMENT_SQL_QUERY_LENGTH ];
