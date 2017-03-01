@@ -35,62 +35,68 @@ $g_url_site= parse_url('SERVER', PHP_URL_QUERY);
 ?>
 	</head>
 	<body>
-	<?php
-	
-	
-	
-	
-	if (isset($_POST['site'])) {
-$form_value=$_POST['site'];
-echo("
-		<!--Main content of page-->
-		<div class=\"container\">
-			<div id=\"grid\">
-				<div id=\"loading\">
-					<p>Loading...</p>
-				</div>
-			</div>
-		</div>
-	<script type=\"text/javascript\">
-		function refresh_grid( )
-		{
-			//window.alert(\"Refreshing\");
-			var xhttp = new XMLHttpRequest( );
-			xhttp.onreadystatechange = function( )
+<?php
+	if (isset($_POST['site'])) 
+	{
+		$form_value=$_POST['site'];
+		echo
+		(
+			"<script type=\"text/javascript\">
+			function refresh_grid( )
 			{
-				if ( xhttp.readyState == 4 && xhttp.status == 200 ) 
+				//window.alert(\"Refreshing\");
+				var xhttp = new XMLHttpRequest( );
+				xhttp.onreadystatechange = function( )
 				{
-					//window.alert(\"Ready state: \" + xhttp.readyState);
-					document.getElementById( \"grid\" ).innerHTML = xhttp.responseText;
-				}
-				else
-				{
-					//window.alert(\"Ready state: \" + xhttp.readyState);
-				}
-			};
-			xhttp.open(\"GET\", \"php/grid.php?site=$form_value\", true);
-			xhttp.send();
-		}
-		</script>
-		<script>
-			refresh_grid( );
-			setInterval( refresh_grid, 10000 );
-		</script>
-</body>
-</html>	
-");
-}
-else { 
+					if ( xhttp.readyState == 4 && xhttp.status == 200 ) 
+					{
+						//window.alert(\"Ready state: \" + xhttp.readyState);
+						document.getElementById( \"grid\" ).innerHTML = xhttp.responseText;
+						$(function () { $(\"[data-toggle='popover']\").popover(); });
+					}
+					else
+					{
+						//window.alert(\"Ready state: \" + xhttp.readyState);
+					}
+				};
+				xhttp.open(\"GET\", \"php/grid.php?site=$form_value\", true);
+				xhttp.send();
+			}
+			</script>
+			<script>
+				refresh_grid( );
+				setInterval( refresh_grid, 10000 );
+			</script>
+			<!--Main content of page-->
+			<div class=\"container\">
+				<div id=\"grid\">
+					<div id=\"loading\">
+						<p>Loading...</p>
+					</div>
+				</div>
+			</div>"
+		);
+	}
+	else 
+	{ 
 
-echo ( "<form action=\"index.php\" method=\"POST\">
-<input type=\"radio\" name=\"site\" value=\"EC\">Emmanuel College
-<input type=\"radio\" name=\"site\" value=\"KA\">Kings Academy
-<input type=\"radio\" name=\"site\" value=\"BA\">Bede Academy
-<input type=\"radio\" name=\"site\" value=\"TA\">Trinity Academy
-<input type=\"radio\" name=\"site\" value=\"SS\">Support Services
-<input type=\"submit\" name=\"submit\" value=\"Go\"/>
-</form>");
+		echo 
+		( 
+			"
+			<form action=\"index.php\" method=\"POST\">
+				<input type=\"radio\" name=\"site\" value=\"EC\">Emmanuel College
+				<input type=\"radio\" name=\"site\" value=\"KA\">Kings Academy
+				<input type=\"radio\" name=\"site\" value=\"BA\">Bede Academy
+				<input type=\"radio\" name=\"site\" value=\"TA\">Trinity Academy
+				<input type=\"radio\" name=\"site\" value=\"SS\">Support Services
+				<input type=\"submit\" name=\"submit\" value=\"Go\"/>
+			</form>
+			"
+		);
 
-
-}
+	}
 ?>
+
+	</body>
+</html>	
+
