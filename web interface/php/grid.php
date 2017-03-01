@@ -32,8 +32,19 @@ $g_stale_dns_width = 0;
 $g_just_lost_contact_width = 0;
 $g_index = 0;
 
-$g_site = 2;
-$test_host = 0;
+$g_site=$_GET["site"];
+
+if ($g_site=="EC") {
+$g_site=2;
+} elseif ($g_site=="KA") {
+$g_site=3;
+} elseif ($g_site=="TA") {
+$g_site=4;
+} elseif ($g_site=="BA") {
+$g_site=5;
+}elseif ($g_site=="SS") {
+$g_site=1;
+}
 
 /* Grab configuration data from ini files */
 $g_database_connection_data = parse_ini_file ( "{$db_config_location}", true );
@@ -70,11 +81,6 @@ foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'grid_y' ] = $grid_y;
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'grid_x' ] = $grid_x;
 	
-	if ( $id == 1364 )
-	{
-		$test_host = $canonical_name;
-	}
-	
 	/* Increment the results counter */
 	$g_hosts_details_query_results_counter++;
 }
@@ -84,11 +90,12 @@ $sql_select_query =
 	"SELECT id, status, cpu_usage, memory_usage, disk_usage, cpu_timestamp, logged_on_user
 	FROM hosts_status
 	WHERE id IN
-			(SELECT id
-				FROM hosts_details
-				WHERE site = $g_site
-				)";
-	
+	(
+		SELECT id
+		FROM hosts_details
+		WHERE site = $g_site
+	)";
+
 foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 {
 	$id = $data_row[ 'id' ];
@@ -128,14 +135,7 @@ foreach ( $g_summary_results as $count )
 
 for ( $g_index = 0; $g_index < 6; $g_index++ )
 {
-	if ( array_key_exists ( $g_index, $g_summary_results ) )
-	{
-		$count = $g_summary_results [ $g_index ];		
-	}
-	else
-	{
-		$count = NULL;
-	}
+	$count = $g_summary_results [ $g_index ];
 	//echo ( "Count: $count" );
 	if ( $count != NULL )
 	{
@@ -255,10 +255,9 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 						data-trigger=\"hover\" 
 						data-html=\"true\" 
 						title=\"$canonical_name\" 
-						data-content=\"<p>User: $logged_on_user</p><p>CPU Usage: $cpu_usage</p><p>Free Memory: $memory_usage</p><p>Disk Usage: $disk_usage</p><p><small>Last Reported: $cpu_timestamp</small></p>\"
+						data-content=\"<p>Logged On: $logged_on_user</p><p>CPU Usage: $cpu_usage</p><p>Free Memory: $memory_usage</p><p>Disk Usage: $disk_usage</p><p><small>Last Reported: $cpu_timestamp</small></p>\"
 					>
 				" );
-				//$display_text = $test_host;
 				echo ( $display_text );
 				echo ( "</div>" );
 				echo ( "</td>" );
