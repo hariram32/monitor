@@ -2,6 +2,9 @@
 /* The relative path that needs to be taken to the webroot from the current location of this file */
 $path_to_root = './';
 
+/* Global variables used by all scripts */
+include ( "{$path_to_root}php/globals.php" );
+
 ////////////////////////////////////////
 /* Main entry point for Ping Monitor  */
 ////////////////////////////////////////

@@ -141,7 +141,14 @@ foreach ( $g_summary_results as $count )
 
 for ( $g_index = 0; $g_index < 6; $g_index++ )
 {
-	$count = $g_summary_results [ $g_index ];
+	if ( array_key_exists ( $g_index, $g_summary_results ) )
+	{
+		$count = $g_summary_results [ $g_index ];
+	}
+	else
+	{
+		$count = 0;
+	}
 	//echo ( "Count: $count" );
 	if ( $count != NULL )
 	{
