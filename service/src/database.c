@@ -199,7 +199,7 @@ int process_database ( )
 				}
 				process_timers ( );
 			}
-			printf( "Updating database status for host %d, previous status: %d, current status: %d\n", i, previous_status, status );
+			//printf( "Updating database status for host %d, previous status: %d, current status: %d\n", i, previous_status, status );
 			char update_query [ MAX_SQL_QUERY_LENGTH ];
 			sprintf
 			(

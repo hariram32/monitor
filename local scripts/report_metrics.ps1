@@ -54,6 +54,15 @@ function get-freememory {
 	
 }
 
+function get-diskqueue {
+
+	$disk_queue = Get-Counter '\PhysicalDisk(_Total)\Current Disk Queue Length' `
+		| Select-Object -ExpandProperty countersamples `
+		| Select-Object -Property cookedvalue
+	return $disk_queue.CookedValue
+	
+}
+
 function get-disktime {
 
 	$disk_time = Get-Counter '\PhysicalDisk(_Total)\% Disk Time' `
@@ -76,7 +85,8 @@ if ( -not [string]::IsNullOrEmpty( $id ) ) {
 
 	$load = 0
 	$memory_available = 0
-	$disk_time = 0
+	#$disk_time = 0
+	$disk_queue = 0
 	Try {
 		$load = get-load
 	}
@@ -89,8 +99,14 @@ if ( -not [string]::IsNullOrEmpty( $id ) ) {
 	Catch {
 		Write-Host "ERROR : Bad memory data"
 	}
-	Try {
+	<#Try {
 		$disk_time = get-disktime
+	}
+	Catch {
+		Write-Host "ERROR : Bad disk data"
+	}#>
+	Try {
+		$disk_queue = get-diskqueue
 	}
 	Catch {
 		Write-Host "ERROR : Bad disk data"
@@ -111,12 +127,18 @@ if ( -not [string]::IsNullOrEmpty( $id ) ) {
 		$update_query = "UPDATE hosts_status SET memory_usage=$free_percentage, memory_timestamp=`'$timestamp`' WHERE id=$id"
 		query-sql( $update_query )
 	}
-	if ( -not [string]::IsNullOrEmpty( $disk_time ) ) {
+	if ( -not [string]::IsNullOrEmpty( $disk_queue ) ) {
+		$timestamp = get-date -f 'yyyy-MM-dd HH:mm:ss'
+		write-host "Disk: $host_name - $disk_queue - $timestamp"
+		$update_query = "UPDATE hosts_status SET disk_usage=$disk_queue, disk_timestamp=`'$timestamp`' WHERE id=$id"
+		query-sql( $update_query )
+	}
+	<#if ( -not [string]::IsNullOrEmpty( $disk_time ) ) {
 		$timestamp = get-date -f 'yyyy-MM-dd HH:mm:ss'
 		write-host "Disk: $host_name - $disk_time - $timestamp"
 		$update_query = "UPDATE hosts_status SET disk_usage=$disk_time, disk_timestamp=`'$timestamp`' WHERE id=$id"
 		query-sql( $update_query )
-	}
+	}#>
 	if ( [string]::IsNullOrEmpty( $logged_on_user ) ) {
 		$logged_on_user = "none"
 	}

@@ -172,4 +172,9 @@ int process_hosts ( )
 		//printf ( "Send count for host %d: %d\n", i, g_hosts [ i ] . send_count );
 		//printf ( "Host status for host %d: %d\n", i, g_hosts [ i ] . status );
 	}
+	// Flush receives before database write
+	for ( i = 0; i < g_host_count; i++ )
+	{
+		receive ( );
+	}
 }

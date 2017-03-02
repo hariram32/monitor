@@ -277,6 +277,15 @@ table.fixed td
 	font-size: 9px;
 } /*Hide text outside the cell.*/
 
+table.fixed td p
+{
+	overflow: hidden;
+    text-align: left; 
+    vertical-align: middle;
+    font-family: Calibri, Serif;
+	font-size: 12px;
+} /*Hide text outside the cell.*/
+
 table.fixed td:nth-of-type(1) 
 {
 	width:35px;

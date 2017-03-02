@@ -35,7 +35,7 @@ main ( )
 			current_clock = clock ( );
 			printf ( "Database processing started at clock %lld\n", current_clock );
 			process_database ( );
-			sleep ( 1 );
+			sleep ( 3 );
 			current_clock = clock ( );
 			printf ( "Main loop finished at clock %lld\n", current_clock );
 		}
