@@ -79,6 +79,8 @@ int initialise_database ( )
 		int grid_x = strtol ( g_host_data [ i ] [ 3 ], NULL, 10 );
 		char site_code [ MAX_CSV_ENTRY_LENGTH ];
 		strcpy ( site_code, g_host_data [ i ][ 4 ] );
+		char location [ MAX_CSV_ENTRY_LENGTH ];
+		strcpy ( location, g_host_data [ i ][ 5 ] );
 		int site_id = 0;
 		char select_query [ MAX_SQL_QUERY_LENGTH ];
 		sprintf
@@ -117,9 +119,9 @@ int initialise_database ( )
 		sprintf 
 		( 
 			insert_query,
-			"INSERT INTO hosts_details (id, canonical_name, ip, display_name, grid_y, grid_x, site) \
-				VALUES ('%d', '%s', '%s', '%s', '%d', '%d', '%d')",
-			i, canonical_name, ip, display_name, grid_y, grid_x, site_id
+			"INSERT INTO hosts_details (id, canonical_name, ip, display_name, grid_y, grid_x, site, location) \
+				VALUES ('%d', '%s', '%s', '%s', '%d', '%d', '%d', '%s')",
+			i, canonical_name, ip, display_name, grid_y, grid_x, site_id, location
 		);
 		if ( mysql_query ( g_conn, insert_query ) ) 
 		{

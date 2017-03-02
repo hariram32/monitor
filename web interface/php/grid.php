@@ -61,7 +61,7 @@ $g_database_connection = open_database_connection ( $db_server, $db_database, $d
 
 /* SQL to return all the hosts in the database */
 $sql_select_query = 
-	"SELECT id, canonical_name, ip, display_name, grid_y, grid_x
+	"SELECT id, canonical_name, ip, display_name, grid_y, grid_x, location
 	FROM hosts_details
 	WHERE site = $g_site";
 
@@ -73,6 +73,11 @@ foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 	$display_name = $data_row[ 'display_name' ];
 	$grid_y = $data_row[ 'grid_y' ];
 	$grid_x = $data_row[ 'grid_x' ];
+	$location = $data_row[ 'location' ];
+	if ( $location == '' )
+	{
+		$location = 'unknown';
+	}
 	/* Store results in array for sorting later */
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'id' ] = $id;
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'canonical_name' ] = $canonical_name;
@@ -80,6 +85,7 @@ foreach ( $g_database_connection->query( $sql_select_query ) as $data_row )
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'display_name' ] = $display_name;
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'grid_y' ] = $grid_y;
 	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'grid_x' ] = $grid_x;
+	$g_hosts_details_query_results[ $g_hosts_details_query_results_counter ][ 'location' ] = $location;
 	
 	/* Increment the results counter */
 	$g_hosts_details_query_results_counter++;
@@ -205,6 +211,7 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 						$disk_usage = $g_hosts_status_query_results[ $k ][ 'disk_usage' ];
 						$cpu_timestamp = $g_hosts_status_query_results[ $k ][ 'cpu_timestamp' ];
 						$logged_on_user = $g_hosts_status_query_results[ $k ][ 'logged_on_user' ];
+						$location = $g_hosts_details_query_results[ $k ][ 'location' ];
 						$display_text = $g_hosts_details_query_results[ $k ][ 'display_name' ];
 						$canonical_name = $g_hosts_details_query_results[ $k ][ 'canonical_name' ];
 						switch ( $status )
@@ -255,7 +262,7 @@ $g_percentage_colour = get_percentage_colour ( $g_percentage_on, $g_responding_c
 						data-trigger=\"hover\" 
 						data-html=\"true\" 
 						title=\"$canonical_name\" 
-						data-content=\"<p>Logged On: $logged_on_user</p><p>CPU Usage: $cpu_usage</p><p>Free Memory: $memory_usage</p><p>Disk Usage: $disk_usage</p><p><small>Last Reported: $cpu_timestamp</small></p>\"
+						data-content=\"<p>Logged On: $logged_on_user</p><p>Location: $location</p><p>CPU Usage: $cpu_usage</p><p>Free Memory: $memory_usage</p><p>Disk Queue: $disk_usage</p><p><small>Last Reported: $cpu_timestamp</small></p>\"
 					>
 				" );
 				echo ( $display_text );
